@@ -1,0 +1,11 @@
+Herein are described the coding standards that should be adopted in this project:
+- indentation using tabs
+- line length limit is 90 columns
+- no more than one statement per line
+- catch exceptions
+- don't catch broad exception classes (i.e. Exception)
+- use disambiguated variable names (i.e. avoid names like "data" or "flag")
+- use disambiguated method names (i.e. avoid names with "process" or "handle")
+- use comments where code behaviour can be unclear or obfuscated
+- leave two blank lines between each function
+- constants should be written in capital letters (i.e. "MAX_ITEMS")
