@@ -1,5 +1,3 @@
-import discord
-
 class Song():
 	"""
 	TODO reduce the data being passed

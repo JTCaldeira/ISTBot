@@ -24,10 +24,9 @@ class YTDLsource():
 	async def create_source(self, url):
 		to_run = partial(self.ytdl.extract_info, url=url)
 		data = await asyncio.get_event_loop().run_in_executor(None, to_run)
-
+		
 		if 'entries' in data:
 			data = data['entries'][0]
 
-		print(data['title'].replace(' ', '_'))
 
 		return [self.ytdl.prepare_filename(data), data]

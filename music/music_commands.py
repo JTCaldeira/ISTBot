@@ -1,7 +1,6 @@
 import discord
 from discord import VoiceChannel as vc
 from discord.ext.commands import Bot
-from youtube_dl import YoutubeDL
 import YTDLsource
 import music as m
 from song import Song
@@ -11,7 +10,7 @@ import config
 SECRET_KEY = config.KEY #Replace 'config.key' with your key
 
 bot = Bot(command_prefix = '?')
-music_player = None #This shouldn't be a global
+
 
 #For testing purposes. It will be removed
 @bot.event
@@ -35,11 +34,11 @@ async def queue(ctx):
 
 @music.command(name = 'play')
 async def play(ctx, *, args):
-	print(args)
 	try:
 		voice_channel = get_voice_channel(ctx, ctx.message.author)
 	except TypeError:
-		await ctx.send(ctx.message.author.mention + " You must be in a voice channel if you want to headbang bro")
+		await ctx.send(ctx.message.author.mention + 
+					" You must be in a voice channel if you want to headbang bro")
 		return
 
 	if not await bot_connected(voice_channel):
@@ -47,10 +46,9 @@ async def play(ctx, *, args):
 		music_player = m.Music(ctx)
 
 	data_source, data = await ytsource.create_source(args)
-	source = discord.FFmpegPCMAudio(data_source)
 
 	#song = Song(data)
-	await music_player.add_to_queue(source, data['title'])
+	await music_player.add_to_queue(discord.FFmpegPCMAudio(data_source), data_source)
 	#await ctx.send(embed=song.create_embed())
 
 
@@ -94,5 +92,7 @@ def get_voice_channel(ctx, user):
 			return channel
 	raise TypeError
 
+
+music_player = None #This shouldn't be a global
 ytsource = YTDLsource.YTDLsource()
 bot.run(SECRET_KEY)
