@@ -64,6 +64,29 @@ async def stop(ctx):
 	except AttributeError:
 		pass
 
+
+"""
+If the VoiceClient is playing audio, then the audio is paused
+@param ctx Current context
+"""
+@music.command(name  = 'pause')
+async def pause(ctx):
+	vc = ctx.voice_client
+	if vc.is_playing():
+		vc.pause()
+
+
+"""
+If the VoiceClient is playing audio, but is paused then the audio is resumed.
+@param ctx Current context
+"""
+@music.command(name = 'resume')
+async def resume(ctx):
+	vc = ctx.voice_client
+	if vc.is_paused():
+		vc.resume()
+
+
 """
 Checks if a bot is connected to a certain voice channel. 
 If it isn't, then an attempt at connecting will be made
