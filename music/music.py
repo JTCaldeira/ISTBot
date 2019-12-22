@@ -9,8 +9,9 @@ class Music():
 		self.queue = asyncio.Queue()
 		self.next = asyncio.Event()
 		self.current_song = None
+		self.DOWNLOAD_DIRECTORY = 'downloads/'
 
-		ctx.bot.loop.create_task(self.queue_loop())
+		self.bot.loop.create_task(self.queue_loop())
 
 
 	def get_queue(self):
@@ -35,6 +36,13 @@ class Music():
 		else:
 			print("The file doesn't exist") #Might be better to just handle the exception here
 
+	def cleanup(self):
+		for file in os.listdir(self.DOWNLOAD_DIRECTORY):
+			file_path = directory + file
+			os.remove(file_path)
+
+	def stop_queue_loop(self):
+		self.bot.loop.create_task(self.stop())
 
 	async def queue_loop(self):
 
@@ -47,6 +55,7 @@ class Music():
 				async with timeout(300):
 					source, file_path = await self.queue.get()
 			except asyncio.TimeoutError:
+				self.stop_queue_loop()
 				return
 
 			self.current_song = source

@@ -61,6 +61,8 @@ async def stop(ctx):
 
 	try:
 		await ctx.guild.voice_client.disconnect() #Implement this on Music class
+		music_player.cleanup()
+		music_player.stop_queue_loop()
 	except AttributeError:
 		pass
 
@@ -97,7 +99,7 @@ If it isn't, then an attempt at connecting will be made
 """
 async def bot_connected(voice_channel):
 	try:
-		await voice_channel.connect()
+		await voice_channel.connect(reconnect = True)
 		return False
 	except discord.ClientException:
 		return True
