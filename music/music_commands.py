@@ -74,7 +74,7 @@ If the VoiceClient is playing audio, then the audio is paused
 @music.command(name  = 'pause')
 async def pause(ctx):
 	vc = ctx.voice_client
-	if vc.is_playing():
+	if vc and vc.is_playing():
 		vc.pause()
 
 
@@ -85,7 +85,7 @@ If the VoiceClient is playing audio, but is paused then the audio is resumed.
 @music.command(name = 'resume')
 async def resume(ctx):
 	vc = ctx.voice_client
-	if vc.is_paused():
+	if vc and vc.is_paused():
 		vc.resume()
 
 

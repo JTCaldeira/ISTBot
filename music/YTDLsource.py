@@ -28,5 +28,4 @@ class YTDLsource():
 		if 'entries' in data:
 			data = data['entries'][0]
 
-
 		return [self.ytdl.prepare_filename(data), data]

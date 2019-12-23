@@ -12,7 +12,8 @@ class Song():
 	def create_embed(self):
 		embed = (discord.Embed(title='Now playing',
 								color=discord.Color.blurple())
-				 .add_field(name='Duration', value=self.data['duration']))
+				 .add_field(name='Duration', value=self.data['duration'])
+				 .set_thumbnail(url=data['set_thumbnail']))
 
 		return embed
 
