@@ -38,7 +38,7 @@ class Music():
 
 	def cleanup(self):
 		for file in os.listdir(self.DOWNLOAD_DIRECTORY):
-			file_path = directory + file
+			file_path = self.DOWNLOAD_DIRECTORY + file
 			os.remove(file_path)
 
 	def stop_queue_loop(self):
