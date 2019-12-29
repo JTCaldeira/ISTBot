@@ -1,6 +1,7 @@
 import asyncio
 from async_timeout import timeout
 import os
+from song import Song
 
 class Music():
 	def __init__(self, ctx):
@@ -11,7 +12,7 @@ class Music():
 		self.current_song = None
 		self.DOWNLOAD_DIRECTORY = 'downloads/'
 
-		self.bot.loop.create_task(self.queue_loop())
+		self.task = self.bot.loop.create_task(self.queue_loop())
 
 
 	def get_queue(self):
@@ -22,8 +23,8 @@ class Music():
 		return self.queue.empty()
 
 
-	async def add_to_queue(self, song, title):
-		await self.queue.put([song, title])
+	async def add_to_queue(self, song, data):
+		await self.queue.put([song, data])
 
 
 	def pop_queue_element(self):
@@ -36,13 +37,21 @@ class Music():
 		else:
 			print("The file doesn't exist") #Might be better to just handle the exception here
 
+
 	def cleanup(self):
 		for file in os.listdir(self.DOWNLOAD_DIRECTORY):
 			file_path = self.DOWNLOAD_DIRECTORY + file
 			os.remove(file_path)
 
+
 	def stop_queue_loop(self):
-		self.bot.loop.create_task(self.stop())
+		self.task.stop
+
+
+	def get_current_song(self):
+		song = Song(self.current_song[1])
+		return song.create_embed()
+
 
 	async def queue_loop(self):
 
@@ -51,19 +60,20 @@ class Music():
 		while not self.bot.is_closed():
 			self.next.clear()
 
+
 			try:
 				async with timeout(300):
-					source, file_path = await self.queue.get()
+					source, data = await self.queue.get()
 			except asyncio.TimeoutError:
 				self.stop_queue_loop()
 				return
 
-			self.current_song = source
+			self.current_song = [source, data]
 
 			self.guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
 
 			await self.next.wait()
-			self.remove_download_file(file_path)
+			self.remove_download_file(data['file_path'])
 
 			source.cleanup()
 			self.current_song = None

@@ -1,6 +1,8 @@
 from youtube_dl import YoutubeDL
 from functools import partial
 import asyncio
+import time
+
 
 class YTDLsource():
 	def __init__(self):
@@ -21,11 +23,20 @@ class YTDLsource():
 		self.ytdl = YoutubeDL(ytdlopts)
 
 
+	def assemble_data(self, data):
+		new_data = {}
+		new_data['thumbnail'] = data['thumbnail']
+		new_data['duration'] = time.strftime('%M:%S', time.gmtime(data['duration']))
+		new_data['title'] = data['title']
+
+		return new_data
+
+
 	async def create_source(self, url):
 		to_run = partial(self.ytdl.extract_info, url=url)
 		data = await asyncio.get_event_loop().run_in_executor(None, to_run)
 		
 		if 'entries' in data:
-			data = data['entries'][0]
+			data = self.assemble_data(data['entries'][0])
 
 		return [self.ytdl.prepare_filename(data), data]

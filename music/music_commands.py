@@ -46,10 +46,10 @@ async def play(ctx, *, args):
 		music_player = m.Music(ctx)
 
 	data_source, data = await ytsource.create_source(args)
-
-	#song = Song(data)
-	await music_player.add_to_queue(discord.FFmpegPCMAudio(data_source), data_source)
-	#await ctx.send(embed=song.create_embed())
+	song = Song(data)
+	data['file_path'] = data_source
+	data['requester'] = ctx.message.author
+	await music_player.add_to_queue(discord.FFmpegPCMAudio(data_source), data)
 
 
 @music.command(name = 'stop')
@@ -60,9 +60,11 @@ async def stop(ctx):
 		return await ctx.send('I\'m not playing any song at the moment', delete_after=10)
 
 	try:
+		global music_player
 		await ctx.guild.voice_client.disconnect() #Implement this on Music class
+		await music_player.stop_queue_loop()
 		music_player.cleanup()
-		music_player.stop_queue_loop()
+		music_player = None
 	except AttributeError:
 		pass
 
@@ -87,6 +89,18 @@ async def resume(ctx):
 	vc = ctx.voice_client
 	if vc and vc.is_paused():
 		vc.resume()
+
+
+"""
+If the VoiceClient is playing audio, a visual representation of the current song
+will be presented on the channel where the command was invoked.
+@param ctx Current context
+"""
+@music.command(name = 'current')
+async def current(ctx):
+	vc = ctx.voice_client
+	if vc and vc.is_playing and music_player:
+		await ctx.send(embed=music_player.get_current_song())
 
 
 """
@@ -120,4 +134,7 @@ def get_voice_channel(ctx, user):
 
 music_player = None #This shouldn't be a global
 ytsource = YTDLsource.YTDLsource()
-bot.run(SECRET_KEY)
+try:
+	bot.run(SECRET_KEY)
+except KeyboardInterrupt:
+	print('Bot is shutting down.')
