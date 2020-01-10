@@ -101,7 +101,7 @@ will be presented on the channel where the command was invoked.
 @music.command(name = 'current')
 async def current(ctx):
 	vc = ctx.voice_client
-	if vc and vc.is_playing and music_player:
+	if vc and vc.is_playing and not music_player.queue_is_empty():
 		await ctx.send(embed=music_player.get_current_song())
 
 
