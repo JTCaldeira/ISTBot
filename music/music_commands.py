@@ -46,10 +46,12 @@ async def play(ctx, *, args):
 		music_player = m.Music(ctx)
 
 	data_source, data = await ytsource.create_source(args)
-	song = Song(data)
-	data['file_path'] = data_source
-	data['requester'] = ctx.message.author
-	await music_player.add_to_queue(discord.FFmpegPCMAudio(data_source), data)
+
+	if data_source and data:
+		song = Song(data)
+		data['file_path'] = data_source
+		data['requester'] = ctx.message.author
+		await music_player.add_to_queue(discord.FFmpegPCMAudio(data_source), data)
 
 
 @music.command(name = 'stop')
