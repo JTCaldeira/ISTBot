@@ -8,7 +8,7 @@ class YTDLsource():
 	def __init__(self):
 		ytdlopts = {
     		'format': 'bestaudio/best',
-    		'outtmpl': 'downloads/%(title)s',
+    		'outtmpl': 'music/downloads/%(title)s',
     		'restrictfilenames': True,
     		'noplaylist': True,
     		'nocheckcertificate': True,

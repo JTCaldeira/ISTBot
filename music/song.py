@@ -14,6 +14,7 @@ class Song():
 	This method will be used for a visual representation of the queue
 	"""
 	def create_embed(self):
+		print('here')
 		embed = (discord.Embed(title='Now playing',
 								color=discord.Color.blurple())
 				.add_field(name="Title", value=self.data['title'])

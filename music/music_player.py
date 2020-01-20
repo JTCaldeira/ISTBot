@@ -1,7 +1,10 @@
 import asyncio
+import music
 from async_timeout import timeout
 import os
-from song import Song
+from music.song import Song
+from music.YTDLsource import YTDLsource
+
 
 class Music():
 	def __init__(self, ctx):
@@ -10,9 +13,14 @@ class Music():
 		self.queue = asyncio.Queue()
 		self.next = asyncio.Event()
 		self.current_song = None
-		self.DOWNLOAD_DIRECTORY = 'downloads/'
+		self.DOWNLOAD_DIRECTORY = 'music/downloads/'
+		self.ytsource = YTDLsource()
 
 		self.task = self.bot.loop.create_task(self.queue_loop())
+
+
+	async def create_source(self, args):
+		return await self.ytsource.create_source(args)
 
 
 	def get_queue(self):
@@ -20,7 +28,7 @@ class Music():
 
 
 	def queue_is_empty(self):
-		return self.queue.empty()
+		return False if self.current_song else True
 
 
 	async def add_to_queue(self, song, data):
