@@ -5,19 +5,19 @@ import discord.ext.commands as commands
 from music.music_player import Music as m
 from music.song import Song
 
+
 class music_commands(commands.Cog):
 	def __init__(self, bot):
-		music_player = None
 		self.bot = bot
 
 
 	@commands.group(name = 'music', invoke_without_command = True)
-	async def music(self, ctx):
+	async def music(ctx):
 		await ctx.send("oof")
 
 
 	@music.command(name= 'queue')
-	async def queue(self, ctx):
+	async def queue(ctx):
 		if not music_player or music_player.queue_is_empty():
 			await ctx.send("The queue is currently empty. Feel free to add some cool jams!")
 			return

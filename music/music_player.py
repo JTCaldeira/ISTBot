@@ -8,6 +8,7 @@ from music.YTDLsource import YTDLsource
 
 class Music():
 	def __init__(self, ctx):
+		self.ctx = ctx
 		self.bot = ctx.bot
 		self.guild = ctx.guild
 		self.queue = asyncio.Queue()
@@ -73,6 +74,7 @@ class Music():
 				async with timeout(300):
 					source, data = await self.queue.get()
 			except asyncio.TimeoutError:
+				await self.ctx.voice_client.disconnect()
 				self.stop_queue_loop()
 				return
 
