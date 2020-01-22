@@ -15,10 +15,12 @@ def instantiate_bot():
 			print(f'Failed to find the extension {file}.')
 
 	try:
-		bot.run(config.SECRET_KEY)
 		print('Bot is running.')
-	except KeyboardInterrupt:
+		bot.run(config.SECRET_KEY)
+	except (KeyboardInterrupt, errors.ClientException) as e:
 		print('Bot is shutting down.')
+		exit(1)
+
 
 
 if __name__ == "__main__":

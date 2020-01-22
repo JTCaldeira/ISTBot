@@ -12,6 +12,7 @@ class Music():
 		self.bot = ctx.bot
 		self.guild = ctx.guild
 		self.queue = asyncio.Queue()
+		self.songs = []
 		self.next = asyncio.Event()
 		self.current_song = None
 		self.DOWNLOAD_DIRECTORY = 'music/downloads/'
@@ -25,7 +26,12 @@ class Music():
 
 
 	def get_queue(self):
-		return self.queue
+		queue = []
+
+		for song in self.songs:
+			queue.append(Song(song))
+
+		return queue[0].create_embed(queue)
 
 
 	def queue_is_empty(self):
@@ -33,7 +39,8 @@ class Music():
 
 
 	async def add_to_queue(self, song, data):
-		await self.queue.put([song, data])
+		await self.queue.put(song)
+		self.songs.append(data)
 
 
 	def pop_queue_element(self):
@@ -72,7 +79,8 @@ class Music():
 
 			try:
 				async with timeout(300):
-					source, data = await self.queue.get()
+					source = await self.queue.get()
+					data = self.songs[0]
 			except asyncio.TimeoutError:
 				await self.ctx.voice_client.disconnect()
 				self.stop_queue_loop()
@@ -87,4 +95,5 @@ class Music():
 
 			source.cleanup()
 			self.current_song = None
+			self.songs.pop(0)
 

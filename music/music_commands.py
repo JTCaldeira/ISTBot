@@ -2,12 +2,13 @@ import discord
 from discord import VoiceChannel as vc
 from discord.ext.commands import Bot
 import discord.ext.commands as commands
-from music.music_player import Music as m
+from music.music_player import Music
 from music.song import Song
 
 
 class music_commands(commands.Cog):
 	def __init__(self, bot):
+		self.music_player = None
 		self.bot = bot
 
 
@@ -17,12 +18,12 @@ class music_commands(commands.Cog):
 
 
 	@music.command(name= 'queue')
-	async def queue(ctx):
-		if not music_player or music_player.queue_is_empty():
+	async def queue(self, ctx):
+		if not self.music_player or self.music_player.queue_is_empty():
 			await ctx.send("The queue is currently empty. Feel free to add some cool jams!")
 			return
 
-		await ctx.send("Some music")
+		await ctx.send(embed=self.music_player.get_queue())
 
 
 	@music.command(name = 'play')
@@ -35,14 +36,13 @@ class music_commands(commands.Cog):
 			return
 
 		if not await self.bot_connected(voice_channel):
-			global music_player 
-			music_player = m(ctx)
+			self.music_player = Music(ctx)
 
-		data_source, data = await music_player.create_source(args)
+		data_source, data = await self.music_player.create_source(args)
 		song = Song(data)
 		data['file_path'] = data_source
 		data['requester'] = ctx.message.author
-		await music_player.add_to_queue(discord.FFmpegPCMAudio(data_source), data)
+		await self.music_player.add_to_queue(discord.FFmpegPCMAudio(data_source), data)
 
 
 	@music.command(name = 'stop')
@@ -53,11 +53,10 @@ class music_commands(commands.Cog):
 			return await ctx.send('I\'m not playing any song at the moment', delete_after=10)
 
 		try:
-			global music_player
 			await ctx.guild.voice_client.disconnect() #Implement this on Music class
-			await music_player.stop_queue_loop()
-			music_player.cleanup()
-			music_player = None
+			await self.music_player.stop_queue_loop()
+			self.music_player.cleanup()
+			self.music_player = None
 		except AttributeError:
 			pass
 
@@ -92,8 +91,8 @@ class music_commands(commands.Cog):
 	@music.command(name = 'current')
 	async def current(self, ctx):
 		vc = ctx.voice_client
-		if vc and vc.is_playing and not music_player.queue_is_empty():
-			await ctx.send(embed=music_player.get_current_song())
+		if vc and vc.is_playing and not self.music_player.queue_is_empty():
+			await ctx.send(embed=self.music_player.get_current_song())
 
 
 	"""
