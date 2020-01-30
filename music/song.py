@@ -1,4 +1,5 @@
 import discord
+import time
 
 class Song():
 	
@@ -19,16 +20,25 @@ class Song():
 							color=discord.Color.blurple())
 				.add_field(name="Title", value=self.data['title'])
 				.add_field(name="Requested by", value=self.data['requester'])
-				.add_field(name='Duration', value=self.data['duration'])
+				.add_field(name='Duration', value=time.strftime('%M:%S', time.gmtime(self.data['duration'])))
 				.set_thumbnail(url=self.data['thumbnail']))
 		
 		if not song_queue or len(song_queue) == 1:
 			return embed
 
 		embed.add_field(name='__**Up next**__', value= '\a' )
+
 		i = 1
+		total_songs_time = 0
 		for song in song_queue[1:]:
-			embed.add_field(name=str(i), value=song.data['title'] + ' | `' + song.data['duration'] + ' | Requested by: ' + str(song.data['requester']) + '`', inline=False)
+			song_duration = song.data['duration']
+			embed.add_field(name=str(i), value=song.data['title'] + ' | `'
+											+ time.strftime('%M:%S', time.gmtime(song_duration))
+											+ ' | Requested by: ' + str(song.data['requester'])
+											+ '`', inline=False)
 			i += 1
+			total_songs_time += song_duration
+
+		embed.add_field(name='Total time', value=time.strftime('%M:%S', time.gmtime(total_songs_time)))
 
 		return embed

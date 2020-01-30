@@ -1,7 +1,6 @@
 from youtube_dl import YoutubeDL
 from functools import partial
 import asyncio
-import time
 
 
 class YTDLsource():
@@ -26,7 +25,7 @@ class YTDLsource():
 	def assemble_data(self, data):
 		new_data = {}
 		new_data['thumbnail'] = data['thumbnail']
-		new_data['duration'] = time.strftime('%M:%S', time.gmtime(data['duration']))
+		new_data['duration'] = data['duration']
 		new_data['title'] = data['title']
 
 		return new_data
