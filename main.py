@@ -1,5 +1,6 @@
 from discord.ext.commands import Bot
 from discord.ext.commands import errors
+from discord import ClientException
 import config
 
 
@@ -17,10 +18,9 @@ def instantiate_bot():
 	try:
 		print('Bot is running.')
 		bot.run(config.SECRET_KEY)
-	except (KeyboardInterrupt, errors.ClientException) as e:
+	except (KeyboardInterrupt, ClientException) as e:
 		print('Bot is shutting down.')
 		exit(1)
-
 
 
 if __name__ == "__main__":

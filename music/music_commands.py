@@ -42,6 +42,7 @@ class music_commands(commands.Cog):
 		song = Song(data)
 		data['file_path'] = data_source
 		data['requester'] = ctx.message.author
+
 		await self.music_player.add_to_queue(discord.FFmpegPCMAudio(data_source), data)
 
 
@@ -55,7 +56,6 @@ class music_commands(commands.Cog):
 		try:
 			await ctx.guild.voice_client.disconnect() #Implement this on Music class
 			await self.music_player.stop_queue_loop()
-			self.music_player.cleanup()
 			self.music_player = None
 		except AttributeError:
 			pass

@@ -61,8 +61,9 @@ class Music():
 			os.remove(file_path)
 
 
-	def stop_queue_loop(self):
-		self.task.stop
+	async def stop_queue_loop(self):
+		self.task.cancel
+		self.cleanup()
 
 
 	def get_current_song(self):
@@ -77,14 +78,13 @@ class Music():
 		while not self.bot.is_closed():
 			self.next.clear()
 
-
 			try:
 				async with timeout(300):
 					source = await self.queue.get()
 					data = self.songs[0]
 			except asyncio.TimeoutError:
 				await self.ctx.voice_client.disconnect()
-				self.stop_queue_loop()
+				await self.stop_queue_loop()
 				return
 
 			self.current_song = [source, data]
