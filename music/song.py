@@ -14,7 +14,7 @@ class Song():
 	"""
 	This method will be used for a visual representation of the queue
 	"""
-	def create_embed(self, song_queue=None):
+	def create_embed(self, song_queue=None, data=None):
 
 		embed = (discord.Embed(title='Now playing',
 							color=discord.Color.blurple())
@@ -40,5 +40,6 @@ class Song():
 			total_songs_time += song_duration
 
 		embed.add_field(name='Total time', value=time.strftime('%M:%S', time.gmtime(total_songs_time)))
+		embed.add_field(name='Songs in queue', value=data['amount_songs'])
 
 		return embed

@@ -31,7 +31,8 @@ class Music():
 		for song in self.songs:
 			queue.append(Song(song))
 
-		return queue[0].create_embed(queue)
+		data = {'amount_songs': self.queue.qsize()}
+		return queue[0].create_embed(song_queue=queue, data=data)
 
 
 	def queue_is_empty(self):
