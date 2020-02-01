@@ -7,9 +7,7 @@ import config
 def instantiate_bot():
 	bot = Bot(command_prefix = '?')
 
-	files = ('music.music_commands',)
-
-	for file in files:
+	for file in config.BOT_COGS:
 		try:
 			bot.load_extension(file)
 		except errors.ExtensionNotFound:
