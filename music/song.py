@@ -13,6 +13,9 @@ class Song():
 
 	"""
 	This method will be used for a visual representation of the queue
+	@param song_queue List of Songs
+	@param data List of additional information
+	@return Embed to be displayed
 	"""
 	def create_embed(self, song_queue=None, data=None):
 
